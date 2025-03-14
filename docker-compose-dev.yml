@@ -1,0 +1,66 @@
+version: '3.8'
+
+services:
+  postgres_dev:
+    image: postgres:15-alpine
+    volumes:
+      - postgres_dev_data:/var/lib/postgresql/data
+    env_file: .env.dev
+    networks:
+      - noex_net
+
+  backend_dev:
+    build: ./backend
+    env_file: .env.dev
+    depends_on:
+      - postgres_dev
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./backend:/app  # Monta el código en desarrollo
+    networks:
+      - noex_net
+
+  # frontend_dev:
+  #   build: ./frontend
+  #   ports:
+  #     - "3000:3000"
+  #   volumes:
+  #     - ./frontend:/app
+  #   environment:
+  #     VITE_API_URL: http://localhost:5000
+  #   networks:
+  #     - noex_net
+
+  # celery_worker_dev:
+  #   build: ./backend
+  #   command: celery -A tasks worker --loglevel=info
+  #   environment:
+  #     DATABASE_URL: postgresql://${DB_USER}:${DB_PASSWORD}@postgres_dev:5432/${DB_NAME}
+  #   depends_on:
+  #     - postgres_dev
+  #   networks:
+  #     - noex_net
+
+  # metabase_dev:
+  #   image: metabase/metabase:v0.42.8.1
+  #   ports:
+  #     - "3001:3000"
+  #   depends_on:
+  #     - postgres_dev
+  #   env_file: .env.dev  # Carga las variables de .env.dev
+  #   environment:
+  #     MB_DB_TYPE: postgres
+  #     MB_DB_HOST: ${DB_HOST}
+  #     MB_DB_PORT: ${DB_PORT}
+  #     MB_DB_USER: ${DB_USER}
+  #     MB_DB_PASS: ${DB_PASSWORD}
+  #     MB_DB_DBNAME: ${DB_NAME}
+  #   networks:
+  #     - noex_net
+
+volumes:
+  postgres_dev_data:
+
+networks:
+  noex_net:
