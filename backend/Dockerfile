@@ -1,7 +1,7 @@
 FROM python:3.9-slim
 
 # Instalar dependencias del sistema
-RUN apt-get update && apt-get install -y gcc
+RUN apt-get update && apt-get install -y gcc libpq-dev
 
 WORKDIR /app
 
