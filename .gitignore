@@ -1,7 +1,29 @@
+# Archivos de entorno
 .env*
 !.env.example
-__pycache__
+
+# Caché de Python
+__pycache__/
 *.pyc
+*.pyo
+*.pyd
+
+# Entorno virtual
 venv/
+
+# Archivos de configuración de Alembic (excepto `versions`)
+backend/migrations/README
+backend/migrations/alembic.ini
+backend/migrations/env.py
+backend/migrations/script.py.mako
+backend/migrations/versions/__pycache__/
+backend/migrations/versions/*.pyc
+
+# Respaldos
 backups/
+
+# Archivos específicos de MacOS
 .DS_Store
+
+# Archivos específicos de Docker (si es necesario)
+docker-compose.override.yml
