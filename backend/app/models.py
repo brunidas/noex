@@ -62,6 +62,7 @@ class Transaction(db.Model):
     description = db.Column(db.String(200))
     category_id = db.Column(db.Integer, db.ForeignKey('categories.id'), nullable=False)
     subcategory_id = db.Column(db.Integer, db.ForeignKey('subcategories.id'), nullable=False)
+    currency_id = db.Column(db.Integer, db.ForeignKey('currencies.id'), nullable=False)  # Nueva columna
     date = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
     is_cleared = db.Column(db.Boolean, default=False)
     created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
@@ -75,8 +76,43 @@ class Transaction(db.Model):
             'description': self.description,
             'category': self.category.name if self.category else None,
             'subcategory': self.subcategory.name if self.subcategory else None,
+            'currency': self.currency.code if self.currency else None,  # Muestra 'USD', 'ARS', etc.
             'date': self.date.isoformat(),
             'is_cleared': self.is_cleared,
+            'created_at': self.created_at.isoformat(),
+            'updated_at': self.updated_at.isoformat()
+        }
+    
+class USDToARS(db.Model):
+    __tablename__ = 'usd_to_ars'
+    id = db.Column(db.Integer, primary_key=True)
+    date = db.Column(db.Date, nullable=False)
+    value = db.Column(db.Float, nullable=False)
+    created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
+    updated_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'date': self.date.isoformat(),
+            'value': self.value,
+            'created_at': self.created_at.isoformat(),
+            'updated_at': self.updated_at.isoformat()
+        }
+    
+class Currency(db.Model):
+    __tablename__ = 'currencies'
+    id = db.Column(db.Integer, primary_key=True)
+    code = db.Column(db.String(3), nullable=False, unique=True)  # Ej: USD, ARS, EUR
+    name = db.Column(db.String(50), nullable=False)  # Ej: Dólar estadounidense, Peso argentino
+    created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
+    updated_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'code': self.code,
+            'name': self.name,
             'created_at': self.created_at.isoformat(),
             'updated_at': self.updated_at.isoformat()
         }
