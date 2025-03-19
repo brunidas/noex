@@ -20,7 +20,7 @@ services:
       - noex_net
 
   pgadmin_dev:
-    image: dpage/pgadmin4
+    image: dpage/pgadmin4:8.1
     env_file: .env.dev  # Usamos el archivo .env.dev para todas las variables de entorno
     ports:
       - "8080:80"  # Exponer puerto de pgAdmin
