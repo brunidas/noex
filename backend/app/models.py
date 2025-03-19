@@ -90,7 +90,8 @@ class USDToARS(db.Model):
     value = db.Column(db.Float, nullable=False)
     created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
     updated_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
-
+    dollar_type = db.relationship('DollarType', backref=db.backref('dollar_type', lazy=True))
+    
     def to_dict(self):
         return {
             'id': self.id,
@@ -112,6 +113,23 @@ class Currency(db.Model):
         return {
             'id': self.id,
             'code': self.code,
+            'name': self.name,
+            'created_at': self.created_at.isoformat(),
+            'updated_at': self.updated_at.isoformat()
+        }
+    
+class DollarType(db.Model):
+    __tablename__ = 'dollar_type'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(50), unique=True, nullable=False)
+    abbreviation = db.Column(db.String(20), unique=True, nullable=False)
+    created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
+    updated_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
+    
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'abbreviation': self.abbreviation,
             'name': self.name,
             'created_at': self.created_at.isoformat(),
             'updated_at': self.updated_at.isoformat()
