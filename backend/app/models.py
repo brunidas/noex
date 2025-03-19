@@ -90,7 +90,8 @@ class USDToARS(db.Model):
     value = db.Column(db.Float, nullable=False)
     created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
     updated_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
-    dollar_type = db.relationship('DollarType', backref=db.backref('dollar_type', lazy=True))
+    dollar_type_id = db.Column(db.Integer, db.ForeignKey('dollar_type.id'), nullable=False )  # Clave foránea
+    dollar_type = db.relationship('DollarType', backref=db.backref('usd_to_ars', lazy=True))
     
     def to_dict(self):
         return {
@@ -98,7 +99,8 @@ class USDToARS(db.Model):
             'date': self.date.isoformat(),
             'value': self.value,
             'created_at': self.created_at.isoformat(),
-            'updated_at': self.updated_at.isoformat()
+            'updated_at': self.updated_at.isoformat(),
+            'dollar_type': self.dollar_type.to_dict()  # Incluyendo información del tipo de dólar
         }
     
 class Currency(db.Model):
